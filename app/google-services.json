@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "157909919381",
+    "project_id": "booksns-24f20",
+    "storage_bucket": "booksns-24f20.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:157909919381:android:daa535e040c1df06cc9d9c",
+        "android_client_info": {
+          "package_name": "org.techtown.booksns"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "157909919381-d0r5nilaeeoq79o2aht1rq53cet09js0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-CTMwfmfVnu5YlK9CwpUJkmRcPUDppZ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "157909919381-d0r5nilaeeoq79o2aht1rq53cet09js0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
