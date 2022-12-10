@@ -1,11 +1,14 @@
 package org.techtown.booksns;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -13,12 +16,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterInside;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -46,11 +52,13 @@ public class WritePostActivity extends AppCompatActivity {
     private static final String TAG = "WritePostActivity";
     private FirebaseUser user;
     private ArrayList<String> pathList = new ArrayList<>();
+    private ArrayList<String> bookList = new ArrayList<>();
     private LinearLayout parent;
     private RelativeLayout btnBackground;
     private ImageView selectedImageView;
     private EditText selectedEditText;
-    private int pathCount,successCount ;
+    private int pathCount,successCount;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +71,7 @@ public class WritePostActivity extends AppCompatActivity {
         btnBackground.setOnClickListener(onClickListener);
         findViewById(R.id.btnCheck).setOnClickListener(onClickListener);
         findViewById(R.id.btnImage).setOnClickListener(onClickListener);
-        findViewById(R.id.btnVideo).setOnClickListener(onClickListener);
         findViewById(R.id.btnImageModify).setOnClickListener(onClickListener);
-        findViewById(R.id.btnVideoModify).setOnClickListener(onClickListener);
         findViewById(R.id.btnDelete).setOnClickListener(onClickListener);
         findViewById(R.id.edtContent).setOnFocusChangeListener(onFocusChangeListener);
         findViewById(R.id.edtTitle).setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -77,6 +83,7 @@ public class WritePostActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     @Override
@@ -85,14 +92,15 @@ public class WritePostActivity extends AppCompatActivity {
         switch (requestCode) {
             case 0:
                 if (resultCode == Activity.RESULT_OK) {
-                    String profilePath = data.getStringExtra("profilePath");
+                    String profilePath = data.getStringExtra("bookImage");
+                    String bookInfo = data.getStringExtra("bookTxt");
                     pathList.add(profilePath);
-
+                    bookList.add(bookInfo);
                     ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
                     LinearLayout linearLayout = new LinearLayout(WritePostActivity.this);
                     linearLayout.setLayoutParams(layoutParams);
-                    linearLayout.setOrientation(LinearLayout.VERTICAL);
+                    linearLayout.setOrientation(LinearLayout.HORIZONTAL);
 
                     if(selectedEditText == null){
                         parent.addView(linearLayout);
@@ -104,25 +112,34 @@ public class WritePostActivity extends AppCompatActivity {
                             }
                         }
                     }
+                    ViewGroup.LayoutParams layoutParam2 = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    ViewGroup.LayoutParams layoutParam3 = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
 
                     ImageView imageView = new ImageView(WritePostActivity.this);
-                    imageView.setLayoutParams(layoutParams);
+                    imageView.setLayoutParams(layoutParam2);
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            btnBackground.setVisibility(View.GONE);
+                            btnBackground.setVisibility(View.VISIBLE);
                             selectedImageView = (ImageView) view;
                         }
                     });
-                    Glide.with(this).load(profilePath).override(1000).into(imageView);
+                    Glide.with(this).load(profilePath).override(300).into(imageView);
                     linearLayout.addView(imageView);
 
-                    EditText editText = new EditText(WritePostActivity.this);
+                    TextView textView = new EditText(WritePostActivity.this);
+                    textView.setLayoutParams(layoutParam3);
+                    textView.setText(bookInfo);
+                    textView.setGravity(Gravity.CENTER_VERTICAL);
+                    linearLayout.addView(textView);
+
+                   /* EditText editText = new EditText(WritePostActivity.this);
                     editText.setLayoutParams(layoutParams);
                     editText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_CLASS_TEXT);
                     editText.setHint("내용");
                     editText.setOnFocusChangeListener(onFocusChangeListener);
-                    linearLayout.addView(editText);
+                    linearLayout.addView(editText);*/
                 }
                 break;
             case 1:
@@ -131,6 +148,7 @@ public class WritePostActivity extends AppCompatActivity {
                     Glide.with(this).load(profilePath).override(1000).into(selectedImageView);
                 }
                 break;
+
         }
     }
 
@@ -142,28 +160,23 @@ public class WritePostActivity extends AppCompatActivity {
                 storageUpload();
                 break;
             case R.id.btnImage:
-                myStartActivity(GalleryActivity.class, "image", 0);
-                break;
-            case R.id.btnVideo:
-                myStartActivity(GalleryActivity.class, "video", 0);
+                myStartActivity(BookActivity.class, "image", 0);
                 break;
             case R.id.btnBackground:
                 if (btnBackground.getVisibility() == View.VISIBLE) {
                     btnBackground.setVisibility(View.GONE);
                 }
                 break;
-            case R.id.btnImageModify:
+
+       /*     case R.id.btnImageModify:
                 myStartActivity(GalleryActivity.class, "image", 1);
                 btnBackground.setVisibility(View.GONE);
                 break;
-            case R.id.btnVideoModify:
-                myStartActivity(GalleryActivity.class, "video", 1);
-                btnBackground.setVisibility(View.GONE);
-                break;
+
             case R.id.btnDelete:
                 parent.removeView((View) selectedImageView.getParent());
                 btnBackground.setVisibility(View.GONE);
-                break;
+                break;*/
             }
         }
     };
@@ -177,6 +190,72 @@ public class WritePostActivity extends AppCompatActivity {
             }
         }
     };
+
+
+
+
+
+
+
+    private void storageUpload() {
+        final String title = ((EditText) findViewById(R.id.edtTitle)).getText().toString();
+        final String textContent=((EditText) findViewById(R.id.edtContent)).getText().toString();
+
+        if (title.length() > 0) {
+            final ArrayList<String> contentsList = new ArrayList<>();
+            final ArrayList<String> booksList = new ArrayList<>();
+            user = FirebaseAuth.getInstance().getCurrentUser();
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
+            FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+            final DocumentReference documentReference = firebaseFirestore.collection("posts").document();
+            WriteInfo writeInfo = new WriteInfo(title, textContent,booksList,contentsList, user.getUid(), new Date());
+
+            for (int i = 0; i < parent.getChildCount(); i++) {
+                LinearLayout linearLayout = (LinearLayout)parent.getChildAt(i);
+                for(int ii=0; ii<linearLayout.getChildCount(); ii++){
+                    View view = linearLayout.getChildAt(ii);
+                    if (view instanceof EditText) {
+                        String text = ((EditText)view).getText().toString();
+                        if (text.length() > 0) {
+                            //contentsList.add(text);
+                        }
+                    }else {
+                        contentsList.add(pathList.get(pathCount));
+                        booksList.add(bookList.get(pathCount));
+                        try {
+
+                            firebaseFirestore.collection("posts").document(documentReference.getId()).set(writeInfo)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d(TAG, "DocumentSnapshot successfully written!");
+                                            finish();
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w(TAG, "Error writing document", e);
+                                        }
+                                    });
+                        } catch (Exception e) {
+                            Log.e("로그", "에러: "+ e.toString());
+                        }
+                        pathCount++;
+                    }
+                }
+            }
+        }else{
+            startToast("제목을 입력해주세요");
+        }
+    }
+
+
+
+
+/*
+
     private void storageUpload() {
         final String title = ((EditText) findViewById(R.id.edtTitle)).getText().toString();
 
@@ -187,7 +266,7 @@ public class WritePostActivity extends AppCompatActivity {
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReference();
             FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-            final DocumentReference documentReference = firebaseFirestore.collection("cities").document();
+            final DocumentReference documentReference = firebaseFirestore.collection("posts").document();
 
 
             for (int i = 0; i < parent.getChildCount(); i++) {
@@ -201,8 +280,9 @@ public class WritePostActivity extends AppCompatActivity {
                         }
                     }else {
                             contentsList.add(pathList.get(pathCount));
-                            final StorageReference mountainImagesRef = storageRef.child("posts/" + documentReference.getId() + "/" + pathCount + ".jpg");
+                            final StorageReference mountainImagesRef = storageRef.child("posts/" + documentReference.getId()+"/"+pathCount+".jpg");
                             try {
+
                                 InputStream stream = new FileInputStream(new File(pathList.get(pathCount)));
                                 StorageMetadata metadata = new StorageMetadata.Builder().setCustomMetadata("index", ""+(contentsList.size()-1)).build();
                                 UploadTask uploadTask = mountainImagesRef.putStream(stream, metadata);
@@ -218,10 +298,9 @@ public class WritePostActivity extends AppCompatActivity {
                                         mountainImagesRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                             @Override
                                             public void onSuccess(Uri uri) {
-                                                contentsList.set(index, uri.toString());
+                                                contentsList.set(index, uri.getPath());
                                                 successCount++;
                                                 if(pathList.size() == successCount){
-                                                    //완료
                                                     WriteInfo writeInfo = new WriteInfo(title, contentsList, user.getUid(), new Date());
                                                     storeUpload(documentReference, writeInfo);
                                                     for(int a = 0; a<contentsList.size(); a++){
@@ -234,6 +313,7 @@ public class WritePostActivity extends AppCompatActivity {
                                     }
                                 });
                             } catch (FileNotFoundException e) {
+                                Log.e("로그","개같은 에러"+ pathList.get(pathCount));
                                 Log.e("로그", "에러: "+ e.toString());
                             }
                             pathCount++;
@@ -245,6 +325,9 @@ public class WritePostActivity extends AppCompatActivity {
         }
     }
 
+*/
+
+    /*
     private void storeUpload(DocumentReference documentReference, WriteInfo writeInfo) {
         documentReference.set(writeInfo)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -263,7 +346,7 @@ public class WritePostActivity extends AppCompatActivity {
 
     }
 
-
+*/
     private void startToast(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
@@ -273,4 +356,5 @@ public class WritePostActivity extends AppCompatActivity {
         intent.putExtra("media",media);
         startActivityForResult(intent, requestCode);
     }
+
 }

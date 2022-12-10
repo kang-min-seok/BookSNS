@@ -6,13 +6,17 @@ import java.util.Date;
 
 public class WriteInfo {
     private String title;
+    private String textContent;
+    private ArrayList<String> bookInfo;
     private ArrayList<String> contents;
     private String publisher;
     private Date createdAt;
 
 
-    public WriteInfo(String title, ArrayList<String> contents, String publisher, Date createdAt){
+    public WriteInfo(String title, String textContent, ArrayList<String> bookInfo,ArrayList<String> contents, String publisher, Date createdAt){
         this.title=title;
+        this.textContent=textContent;
+        this.bookInfo=bookInfo;
         this.contents=contents;
         this.publisher=publisher;
         this.createdAt = createdAt;
@@ -23,6 +27,18 @@ public class WriteInfo {
     }
     public void setTitle(String title){
         this.title = title;
+    }
+    public String getTextContent(){
+        return this.textContent;
+    }
+    public void setTextContent(String textContent){
+        this.textContent = textContent;
+    }
+    public ArrayList<String> getBookInfo(){
+        return this.bookInfo;
+    }
+    public void setBookInfo(ArrayList<String> bookInfo){
+        this.bookInfo = bookInfo;
     }
     public ArrayList<String> getContents(){
         return this.contents;

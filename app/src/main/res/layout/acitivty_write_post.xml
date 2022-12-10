@@ -55,14 +55,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="이미지" />
+                    android:text="책찾기" />
 
-                <Button
-                    android:id="@+id/btnVideo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="동영상" />
             </LinearLayout>
 
             <Button
@@ -104,11 +98,6 @@
                     android:layout_height="wrap_content"
                     android:text="이미지수정" />
 
-                <Button
-                    android:id="@+id/btnVideoModify"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="동영상수정" />
 
                 <Button
                     android:id="@+id/btnDelete"
